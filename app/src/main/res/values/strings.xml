@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Firebase Challenge</string>
+    <string name="kratos_background">kratos_background</string>
 </resources>
