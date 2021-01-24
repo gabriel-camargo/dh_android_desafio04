@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">Firebase Challenge</string>
     <string name="kratos_background">kratos_background</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="remember">Remember</string>
+    <string name="log_in">Log In</string>
+    <string name="create_account">Create Account</string>
+    <string name="name">Name</string>
+    <string name="confirm_password">Confirm Password</string>
 </resources>
