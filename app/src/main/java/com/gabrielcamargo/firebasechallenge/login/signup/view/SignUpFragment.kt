@@ -10,7 +10,6 @@ import android.widget.Button
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.gabrielcamargo.firebasechallenge.R
-import com.gabrielcamargo.firebasechallenge.login.signin.view.SignInViewModel
 import com.gabrielcamargo.firebasechallenge.login.signup.viewmodel.SignUpViewModel
 
 class SignUpFragment : Fragment(), View.OnClickListener {

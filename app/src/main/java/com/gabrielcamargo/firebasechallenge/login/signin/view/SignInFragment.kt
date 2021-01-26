@@ -2,7 +2,6 @@ package com.gabrielcamargo.firebasechallenge.login.signin.view
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +10,7 @@ import android.widget.Button
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.gabrielcamargo.firebasechallenge.R
+import com.gabrielcamargo.firebasechallenge.login.signin.viewmodel.SignInViewModel
 
 class SignInFragment : Fragment(), View.OnClickListener {
 
@@ -45,6 +45,7 @@ class SignInFragment : Fragment(), View.OnClickListener {
         v?.let {
             when(it.id) {
                 R.id.btnCreatAccount_signInFragment -> goToSignUpFragment()
+                R.id.btnLogIn_signInFragment -> signIn()
             }
         }
     }
@@ -52,9 +53,16 @@ class SignInFragment : Fragment(), View.OnClickListener {
     private fun bindEvents() {
         val btnCreateAccount = _view.findViewById<Button>(R.id.btnCreatAccount_signInFragment)
         btnCreateAccount.setOnClickListener(this)
+
+        val btnLogIn = _view.findViewById<Button>(R.id.btnLogIn_signInFragment)
+        btnLogIn.setOnClickListener(this)
     }
 
     private fun goToSignUpFragment() {
         _navController.navigate(R.id.signUpFragment)
+    }
+
+    private fun signIn() {
+        _navController.navigate(R.id.mainActivity)
     }
 }

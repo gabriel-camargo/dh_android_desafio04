@@ -1,4 +1,4 @@
-package com.gabrielcamargo.firebasechallenge.login.signin.view
+package com.gabrielcamargo.firebasechallenge.login.signin.viewmodel
 
 import androidx.lifecycle.ViewModel
 

@@ -8,4 +8,6 @@
     <string name="create_account">Create Account</string>
     <string name="name">Name</string>
     <string name="confirm_password">Confirm Password</string>
+    <string name="criar_game">Criar game</string>
+    <string name="imagem_jogo">Imagem jogo</string>
 </resources>
