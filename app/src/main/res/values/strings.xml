@@ -10,4 +10,6 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="criar_game">Criar game</string>
     <string name="imagem_jogo">Imagem jogo</string>
+    <string name="lancamento">Lançamento:</string>
+    <string name="back_to_games_list">Back to games list</string>
 </resources>

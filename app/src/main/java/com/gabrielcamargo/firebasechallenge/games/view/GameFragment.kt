@@ -7,13 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gabrielcamargo.firebasechallenge.R
 import com.gabrielcamargo.firebasechallenge.games.model.GameModel
 import com.gabrielcamargo.firebasechallenge.games.repository.GameRepository
 import com.gabrielcamargo.firebasechallenge.games.viewmodel.GameViewModel
-import com.google.android.material.snackbar.Snackbar
 
 class GameFragment : Fragment() {
 
@@ -51,7 +51,14 @@ class GameFragment : Fragment() {
         val viewManager = GridLayoutManager(_view.context, 2)
         val recyclerView = _view.findViewById<RecyclerView>(R.id.recyclerViewGames)
         val viewAdapter = GameAdapter(games) {
-            Snackbar.make(_view, it.description, Snackbar.LENGTH_SHORT).show()
+            val action = GameFragmentDirections.actionGamesFragmentToGameDetailsFragment(
+                it.imgUrl,
+                it.name,
+                it.description,
+                it.createdAt,
+                it.id
+            )
+            _view.findNavController().navigate(action)
         }
 
         recyclerView.apply {
