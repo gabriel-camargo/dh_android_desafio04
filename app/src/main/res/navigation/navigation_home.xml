@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_gamesFragment_to_gameDetailsFragment"
             app:destination="@id/gameDetailsFragment" />
+        <action
+            android:id="@+id/action_gamesFragment_to_gameFormFragment"
+            app:destination="@id/gameFormFragment" />
     </fragment>
     <fragment
         android:id="@+id/gameDetailsFragment"
@@ -37,5 +40,37 @@
         <argument
             android:name="gameId"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_gameDetailsFragment_to_gameFormFragment"
+            app:destination="@id/gameFormFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/gameFormFragment"
+        android:name="com.gabrielcamargo.firebasechallenge.gameform.view.GameFormFragment"
+        android:label="game_form_fragment"
+        tools:layout="@layout/game_form_fragment" >
+        <action
+            android:id="@+id/action_gameFormFragment_to_gamesFragment2"
+            app:destination="@id/gamesFragment" />
+        <argument
+            android:name="gameId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <argument
+            android:name="gameName"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="gameYear"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <argument
+            android:name="gameDescription"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="gameImgUrl"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 </navigation>

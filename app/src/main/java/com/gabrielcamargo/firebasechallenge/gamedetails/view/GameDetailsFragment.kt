@@ -10,11 +10,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.gabrielcamargo.firebasechallenge.R
 import com.gabrielcamargo.firebasechallenge.gamedetails.viewModel.GameDetailsViewModel
 import com.gabrielcamargo.firebasechallenge.games.model.GameModel
+import com.gabrielcamargo.firebasechallenge.games.view.GameFragmentDirections
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class GameDetailsFragment : Fragment(), View.OnClickListener {
 
@@ -73,18 +76,34 @@ class GameDetailsFragment : Fragment(), View.OnClickListener {
     private fun bindEvents() {
         val imgGame = _view.findViewById<ImageView>(R.id.imgBack_GameDetailsFragment)
         imgGame.setOnClickListener(this)
+
+        val btnEdit = _view.findViewById<FloatingActionButton>(R.id.btnEdit_gameDetailsFragment)
+        btnEdit.setOnClickListener(this)
     }
 
     override fun onClick(p0: View?) {
         p0?.let {
             when(it.id) {
                 R.id.imgBack_GameDetailsFragment -> backToGameList()
+                R.id.btnEdit_gameDetailsFragment -> goToGameForm()
             }
         }
     }
 
     private fun backToGameList() {
         _navController.navigate(R.id.gamesFragment)
+    }
+
+    private fun goToGameForm() {
+        val action = GameDetailsFragmentDirections.actionGameDetailsFragmentToGameFormFragment(
+            _gameModel.id,
+            _gameModel.name,
+            _gameModel.createdAt,
+            _gameModel.description,
+            _gameModel.imgUrl
+        )
+
+        _navController.navigate(action)
     }
 
 }

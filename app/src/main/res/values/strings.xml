@@ -12,4 +12,9 @@
     <string name="imagem_jogo">Imagem jogo</string>
     <string name="lancamento">Lançamento:</string>
     <string name="back_to_games_list">Back to games list</string>
+    <string name="nome">Nome</string>
+    <string name="created_at">Created at</string>
+    <string name="descricao">Descrição</string>
+    <string name="save_game">Save Game</string>
+    <string name="image_game">Image game</string>
 </resources>
