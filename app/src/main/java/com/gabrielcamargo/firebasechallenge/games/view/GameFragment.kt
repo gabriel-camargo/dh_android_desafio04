@@ -2,11 +2,13 @@ package com.gabrielcamargo.firebasechallenge.games.view
 
 import android.os.Bundle
 import android.service.controls.actions.FloatAction
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -20,15 +22,24 @@ import com.gabrielcamargo.firebasechallenge.games.model.GameModel
 import com.gabrielcamargo.firebasechallenge.games.repository.GameRepository
 import com.gabrielcamargo.firebasechallenge.games.viewmodel.GameViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.*
+import com.google.firebase.database.ktx.database
+import com.google.firebase.database.ktx.getValue
+import com.google.firebase.ktx.Firebase
 
 class GameFragment : Fragment(), View.OnClickListener {
 
     private lateinit var _viewModel: GameViewModel
     private lateinit var _view: View
     private lateinit var _navController: NavController
+    private lateinit var _auth: FirebaseAuth
+    private lateinit var database: DatabaseReference
 
     companion object {
         fun newInstance() = GameFragment()
+    const val TAG = "GAME_FRAGMENT"
     }
 
 
@@ -43,10 +54,16 @@ class GameFragment : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        _auth = Firebase.auth
+        val currentUser = _auth.currentUser
+
+        database = Firebase.database.reference.child("users")
+            .child(currentUser!!.uid).child("games")
+
         _navController = Navigation.findNavController(_view)
         _viewModel = ViewModelProvider(
             this,
-            GameViewModel.GameViewModelFactory(GameRepository(_view.context))
+            GameViewModel.GameViewModelFactory(GameRepository(database))
         ).get(GameViewModel::class.java)
 
         _viewModel.games.observe(viewLifecycleOwner, Observer {

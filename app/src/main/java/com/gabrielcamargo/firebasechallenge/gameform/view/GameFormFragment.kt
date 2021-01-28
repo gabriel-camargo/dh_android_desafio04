@@ -149,7 +149,5 @@ class GameFormFragment : Fragment(), View.OnClickListener {
                 }
             }
         }
-
-
     }
 }
