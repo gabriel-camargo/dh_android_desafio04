@@ -24,7 +24,10 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
@@ -59,11 +62,26 @@ class GameFormFragment : Fragment(), View.OnClickListener {
         database = Firebase.database.reference.child("users")
             .child(currentUser!!.uid).child("games")
 
+        database.addListenerForSingleValueEvent(object: ValueEventListener {
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                dataSnapshot.children.forEach {
+                    //"it" is the snapshot
+                    val key: String = it.key.toString()
+                }
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+                //do whatever you need
+            }
+        })
+
         viewModel = ViewModelProvider(this).get(GameFormViewModel::class.java)
         _navController = Navigation.findNavController(_view)
 
         _gameModel = GameModel(
-            args.gameId,
+            args.gameId ?: "",
             args.gameName ?: "",
             args.gameDescription ?: "",
             args.gameYear,
@@ -75,7 +93,7 @@ class GameFormFragment : Fragment(), View.OnClickListener {
     }
 
     private fun setData() {
-        if(_gameModel.id >= 1) {
+        if(_gameModel.id.isNotEmpty()) {
             val edtName = _view.findViewById<TextInputLayout>(R.id.edtName_gameFormFragment)
             edtName.editText?.setText(_gameModel.name)
 
@@ -136,18 +154,57 @@ class GameFormFragment : Fragment(), View.OnClickListener {
                 edtDesc.error = "Informe o nome do game"
             }
             else -> {
-                database.push().setValue(GameModel(
-                    1,
-                    name,
-                    desc,
-                    createdAt.toInt(),
-                    "https://s1.gaming-cdn.com/images/products/2310/271x377/cuphead-cover.jpg"
-                )).addOnSuccessListener {
-                    _navController.navigate(R.id.gamesFragment)
-                }.addOnFailureListener {
-                    Snackbar.make(_view, "Falha ao cadastrar o jogo.", Snackbar.LENGTH_LONG).show()
+                if(_gameModel.id.isNotEmpty()) {
+                    updateGame(
+                        name,
+                        desc,
+                        createdAt,
+                        "https://s1.gaming-cdn.com/images/products/2310/271x377/cuphead-cover.jpg"
+                    )
+                } else {
+                    insertGame(
+                        name,
+                        desc,
+                        createdAt,
+                        "https://s1.gaming-cdn.com/images/products/2310/271x377/cuphead-cover.jpg"
+                    )
                 }
             }
+        }
+
+
+
+    }
+
+    private fun insertGame(name: String, desc: String, createdAt: String, imgUrl: String) {
+        val newGame = database.push()
+
+        newGame.setValue(GameModel(
+            newGame.key!!,
+            name,
+            desc,
+            createdAt.toInt(),
+            imgUrl
+        )).addOnSuccessListener {
+            _navController.navigate(R.id.gamesFragment)
+        }.addOnFailureListener {
+            Snackbar.make(_view, "Falha ao cadastrar o jogo.", Snackbar.LENGTH_LONG).show()
+        }
+    }
+
+    private fun updateGame(name: String, desc: String, createdAt: String, imgUrl: String) {
+        val uid = _gameModel.id
+
+        database.child(uid).setValue(GameModel(
+            uid,
+            name,
+            desc,
+            createdAt.toInt(),
+            imgUrl
+        )).addOnSuccessListener {
+            _navController.navigate(R.id.gamesFragment)
+        }.addOnFailureListener {
+            Snackbar.make(_view, "Falha ao atualizar o jogo o jogo.", Snackbar.LENGTH_LONG).show()
         }
     }
 }

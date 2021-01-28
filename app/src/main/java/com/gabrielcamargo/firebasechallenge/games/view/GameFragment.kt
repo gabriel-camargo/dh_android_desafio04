@@ -39,9 +39,8 @@ class GameFragment : Fragment(), View.OnClickListener {
 
     companion object {
         fun newInstance() = GameFragment()
-    const val TAG = "GAME_FRAGMENT"
+        const val TAG = "GAME_FRAGMENT"
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -112,7 +111,7 @@ class GameFragment : Fragment(), View.OnClickListener {
     private fun goToGameCreateForm() {
 
         val action = GameFragmentDirections.actionGamesFragmentToGameFormFragment(
-            -1,
+            "",
             "",
             -1,
             "",
