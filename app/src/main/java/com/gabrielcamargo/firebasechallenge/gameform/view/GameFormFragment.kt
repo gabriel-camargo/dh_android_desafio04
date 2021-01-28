@@ -31,7 +31,7 @@ class GameFormFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _view = inflater.inflate(R.layout.game_form_fragment, container, false)
         return _view
     }

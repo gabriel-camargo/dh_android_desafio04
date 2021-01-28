@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "307295564812",
+    "project_id": "digital-house-desafio-04",
+    "storage_bucket": "digital-house-desafio-04.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:307295564812:android:460e3fa328ffa58576aa29",
+        "android_client_info": {
+          "package_name": "com.gabrielcamargo.firebasechallenge"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "307295564812-vpfpmmn6gfu2tdtpv1a0pfqpo0pdufai.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gabrielcamargo.firebasechallenge",
+            "certificate_hash": "08aa262607b8fbbeb5b5e6b07be9df7f43e05d68"
+          }
+        },
+        {
+          "client_id": "307295564812-jklbcldbf4a3ntgklks13f62fu5b3rv3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEv4XutDgOE17P8wQLPIqjD0PKTLpyVBI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "307295564812-jklbcldbf4a3ntgklks13f62fu5b3rv3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
