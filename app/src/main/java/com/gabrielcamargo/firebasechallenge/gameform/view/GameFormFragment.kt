@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.MimeTypeMap
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
@@ -21,8 +22,6 @@ import com.bumptech.glide.Glide
 import com.gabrielcamargo.firebasechallenge.R
 import com.gabrielcamargo.firebasechallenge.gameform.viewmodel.GameFormViewModel
 import com.gabrielcamargo.firebasechallenge.games.model.GameModel
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
@@ -34,7 +33,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.UploadTask
+import com.pnikosis.materialishprogress.ProgressWheel
 import java.lang.System.currentTimeMillis
 
 
@@ -54,6 +53,7 @@ class GameFormFragment : Fragment(), View.OnClickListener {
     private lateinit var _navController: NavController
     private var imageUri: Uri? = null
     private var imageUrlStorage: String = ""
+    private lateinit var progressOverlay: FrameLayout
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -65,6 +65,8 @@ class GameFormFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        progressOverlay = _view.findViewById<FrameLayout>(R.id.progress_overlay);
 
         _auth = Firebase.auth
         val currentUser = _auth.currentUser
@@ -240,14 +242,6 @@ class GameFormFragment : Fragment(), View.OnClickListener {
         if(requestCode == CONTENT_REQUEST_CODE && resultCode == RESULT_OK) {
             imageUri = data?.data
 
-            val imgView = _view.findViewById<ImageView>(R.id.imgView_gameFormFragment)
-
-            imgView.setPadding(8)
-            Glide.with(_view)
-                .load(imageUri)
-                .circleCrop()
-                .into(imgView)
-
             sendImgToStorage()
         }
     }
@@ -264,12 +258,21 @@ class GameFormFragment : Fragment(), View.OnClickListener {
             )
             val fileReference = storage.child("${currentTimeMillis()}.${extension}")
 
+            showOverlay()
             fileReference.putFile(this)
                 .addOnSuccessListener {
 
                     fileReference.downloadUrl.addOnSuccessListener {
                         imageUrlStorage = it.toString()
                         Log.d("GAME_FORM_FRAGMENT", "Image upload: success - $imageUrlStorage")
+
+                        val imgView = _view.findViewById<ImageView>(R.id.imgView_gameFormFragment)
+
+                        imgView.setPadding(8)
+                        Glide.with(_view)
+                            .load(imageUrlStorage)
+                            .circleCrop()
+                            .into(imgView)
 
                     }.addOnFailureListener{
                         imageUrlStorage = ""
@@ -280,6 +283,17 @@ class GameFormFragment : Fragment(), View.OnClickListener {
                 .addOnFailureListener {
                     Log.d("GAME_FORM_FRAGMENT", "Image upload: error - ${it.message}")
                 }
+                .addOnCompleteListener{
+                    hideOverlay()
+                }
         }
+    }
+
+    fun hideOverlay() {
+        progressOverlay.visibility = View.INVISIBLE
+    }
+
+    fun showOverlay() {
+        progressOverlay.visibility = View.VISIBLE
     }
 }

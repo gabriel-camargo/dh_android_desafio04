@@ -2,17 +2,48 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:wheel="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/mini_kratos"
-    android:paddingHorizontal="@dimen/padding_horizontal"
-    android:paddingVertical="@dimen/padding_vertical"
+
     tools:context=".gameform.view.GameFormFragment">
+
+    <FrameLayout
+        android:id="@+id/progress_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:alpha="0.4"
+        android:background="@android:color/black"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:elevation="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.pnikosis.materialishprogress.ProgressWheel
+            android:id="@+id/progress_wheel"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            wheel:matProg_barColor="#5588FF"
+            wheel:matProg_progressIndeterminate="true" />
+
+    </FrameLayout>
+
+
 
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:translationZ="2dp"
+
         app:layout_constraintBottom_toTopOf="@id/materialCardView_gameFormFragment"
         app:layout_constraintEnd_toEndOf="@id/materialCardView_gameFormFragment"
         app:layout_constraintStart_toStartOf="@id/materialCardView_gameFormFragment"
@@ -35,6 +66,7 @@
                 android:contentDescription="@string/image_game" />
 
         </com.google.android.material.card.MaterialCardView>
+
     </FrameLayout>
 
     <com.google.android.material.card.MaterialCardView
@@ -42,6 +74,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginHorizontal="@dimen/padding_horizontal"
+        android:layout_marginVertical="@dimen/padding_vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,7 +84,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="8dp">
+            android:paddingHorizontal="8dp">
+
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/edtName_gameFormFragment"
