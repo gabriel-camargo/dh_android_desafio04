@@ -1,25 +1,28 @@
 package com.gabrielcamargo.firebasechallenge.gameform.view
 
+import android.app.Activity.RESULT_OK
 import android.content.Intent
-import android.media.Image
-import androidx.lifecycle.ViewModelProvider
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.MimeTypeMap
 import android.widget.Button
 import android.widget.ImageView
 import androidx.core.view.setPadding
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
-import com.gabrielcamargo.firebasechallenge.gameform.viewmodel.GameFormViewModel
 import com.gabrielcamargo.firebasechallenge.R
+import com.gabrielcamargo.firebasechallenge.gameform.viewmodel.GameFormViewModel
 import com.gabrielcamargo.firebasechallenge.games.model.GameModel
-import com.gabrielcamargo.firebasechallenge.login.LoginActivity
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
@@ -30,11 +33,16 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.UploadTask
+import java.lang.System.currentTimeMillis
+
 
 class GameFormFragment : Fragment(), View.OnClickListener {
 
     companion object {
         fun newInstance() = GameFormFragment()
+        const val CONTENT_REQUEST_CODE = 1
     }
     private lateinit var _auth: FirebaseAuth
 
@@ -44,6 +52,8 @@ class GameFormFragment : Fragment(), View.OnClickListener {
     private lateinit var database: DatabaseReference
     private val args: GameFormFragmentArgs by navArgs()
     private lateinit var _navController: NavController
+    private var imageUri: Uri? = null
+    private var imageUrlStorage: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -62,7 +72,7 @@ class GameFormFragment : Fragment(), View.OnClickListener {
         database = Firebase.database.reference.child("users")
             .child(currentUser!!.uid).child("games")
 
-        database.addListenerForSingleValueEvent(object: ValueEventListener {
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
@@ -106,24 +116,39 @@ class GameFormFragment : Fragment(), View.OnClickListener {
             val imgView = _view.findViewById<ImageView>(R.id.imgView_gameFormFragment)
             imgView.setPadding(8)
 
-            Glide.with(_view)
-                .load(_gameModel.imgUrl)
-                .circleCrop()
-                .into(imgView)
+            if(_gameModel.imgUrl.isNotEmpty()) {
+                imageUrlStorage = _gameModel.imgUrl
+
+                Glide.with(_view)
+                    .load(_gameModel.imgUrl)
+                    .circleCrop()
+                    .into(imgView)
+            }
         }
     }
 
     private fun bindEvents() {
         val btnSave = _view.findViewById<Button>(R.id.btnSaveGame_gameFormFragment)
         btnSave.setOnClickListener(this)
+
+        val imgView = _view.findViewById<ImageView>(R.id.imgView_gameFormFragment)
+        imgView.setOnClickListener(this)
     }
 
     override fun onClick(p0: View?) {
         p0?.let {
             when(it.id) {
                 R.id.btnSaveGame_gameFormFragment -> saveGame()
+                R.id.imgView_gameFormFragment -> searchImage()
             }
         }
+    }
+
+    private fun searchImage() {
+        val intent = Intent()
+        intent.type = "image/*"
+        intent.action = Intent.ACTION_GET_CONTENT
+        startActivityForResult(intent, CONTENT_REQUEST_CODE)
     }
 
     private fun saveGame() {
@@ -159,33 +184,32 @@ class GameFormFragment : Fragment(), View.OnClickListener {
                         name,
                         desc,
                         createdAt,
-                        "https://s1.gaming-cdn.com/images/products/2310/271x377/cuphead-cover.jpg"
+                        imageUrlStorage
                     )
                 } else {
                     insertGame(
                         name,
                         desc,
                         createdAt,
-                        "https://s1.gaming-cdn.com/images/products/2310/271x377/cuphead-cover.jpg"
+                        imageUrlStorage
                     )
                 }
             }
         }
-
-
-
     }
 
     private fun insertGame(name: String, desc: String, createdAt: String, imgUrl: String) {
         val newGame = database.push()
 
-        newGame.setValue(GameModel(
-            newGame.key!!,
-            name,
-            desc,
-            createdAt.toInt(),
-            imgUrl
-        )).addOnSuccessListener {
+        newGame.setValue(
+            GameModel(
+                newGame.key!!,
+                name,
+                desc,
+                createdAt.toInt(),
+                imgUrl
+            )
+        ).addOnSuccessListener {
             _navController.navigate(R.id.gamesFragment)
         }.addOnFailureListener {
             Snackbar.make(_view, "Falha ao cadastrar o jogo.", Snackbar.LENGTH_LONG).show()
@@ -195,16 +219,67 @@ class GameFormFragment : Fragment(), View.OnClickListener {
     private fun updateGame(name: String, desc: String, createdAt: String, imgUrl: String) {
         val uid = _gameModel.id
 
-        database.child(uid).setValue(GameModel(
-            uid,
-            name,
-            desc,
-            createdAt.toInt(),
-            imgUrl
-        )).addOnSuccessListener {
+        database.child(uid).setValue(
+            GameModel(
+                uid,
+                name,
+                desc,
+                createdAt.toInt(),
+                imgUrl
+            )
+        ).addOnSuccessListener {
             _navController.navigate(R.id.gamesFragment)
         }.addOnFailureListener {
             Snackbar.make(_view, "Falha ao atualizar o jogo o jogo.", Snackbar.LENGTH_LONG).show()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if(requestCode == CONTENT_REQUEST_CODE && resultCode == RESULT_OK) {
+            imageUri = data?.data
+
+            val imgView = _view.findViewById<ImageView>(R.id.imgView_gameFormFragment)
+
+            imgView.setPadding(8)
+            Glide.with(_view)
+                .load(imageUri)
+                .circleCrop()
+                .into(imgView)
+
+            sendImgToStorage()
+        }
+    }
+
+    private fun sendImgToStorage() {
+        imageUri?.run {
+            val firebase = FirebaseStorage.getInstance()
+            val storage = firebase.getReference("gameImages")
+
+            val extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(
+                _view.context.contentResolver.getType(
+                    this
+                )
+            )
+            val fileReference = storage.child("${currentTimeMillis()}.${extension}")
+
+            fileReference.putFile(this)
+                .addOnSuccessListener {
+
+                    fileReference.downloadUrl.addOnSuccessListener {
+                        imageUrlStorage = it.toString()
+                        Log.d("GAME_FORM_FRAGMENT", "Image upload: success - $imageUrlStorage")
+
+                    }.addOnFailureListener{
+                        imageUrlStorage = ""
+                        Log.d("GAME_FORM_FRAGMENT", "Image download: failure - ${it.message}")
+                    }
+
+                }
+                .addOnFailureListener {
+                    Log.d("GAME_FORM_FRAGMENT", "Image upload: error - ${it.message}")
+                }
         }
     }
 }
