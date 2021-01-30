@@ -1,6 +1,5 @@
 package com.gabrielcamargo.firebasechallenge.gamedetails.view
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,22 +9,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.gabrielcamargo.firebasechallenge.R
-import com.gabrielcamargo.firebasechallenge.gamedetails.viewModel.GameDetailsViewModel
 import com.gabrielcamargo.firebasechallenge.games.model.GameModel
-import com.gabrielcamargo.firebasechallenge.games.view.GameFragmentDirections
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class GameDetailsFragment : Fragment(), View.OnClickListener {
 
-    companion object {
-        fun newInstance() = GameDetailsFragment()
-    }
-
-    private lateinit var viewModel: GameDetailsViewModel
     private lateinit var _gameModel: GameModel
     private lateinit var _view: View
     private lateinit var _navController: NavController
@@ -34,7 +25,7 @@ class GameDetailsFragment : Fragment(), View.OnClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _view = inflater.inflate(R.layout.game_details_fragment, container, false)
         return _view
     }
@@ -105,5 +96,4 @@ class GameDetailsFragment : Fragment(), View.OnClickListener {
 
         _navController.navigate(action)
     }
-
 }

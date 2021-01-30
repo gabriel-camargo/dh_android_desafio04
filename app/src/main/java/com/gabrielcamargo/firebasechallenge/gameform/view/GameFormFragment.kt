@@ -14,38 +14,29 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.gabrielcamargo.firebasechallenge.R
-import com.gabrielcamargo.firebasechallenge.gameform.viewmodel.GameFormViewModel
 import com.gabrielcamargo.firebasechallenge.games.model.GameModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
-import com.pnikosis.materialishprogress.ProgressWheel
 import java.lang.System.currentTimeMillis
-
 
 class GameFormFragment : Fragment(), View.OnClickListener {
 
     companion object {
-        fun newInstance() = GameFormFragment()
         const val CONTENT_REQUEST_CODE = 1
     }
-    private lateinit var _auth: FirebaseAuth
 
-    private lateinit var viewModel: GameFormViewModel
+    private lateinit var _auth: FirebaseAuth
     private lateinit var _gameModel: GameModel
     private lateinit var _view: View
     private lateinit var database: DatabaseReference
@@ -66,7 +57,7 @@ class GameFormFragment : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        progressOverlay = _view.findViewById<FrameLayout>(R.id.progress_overlay);
+        progressOverlay = _view.findViewById(R.id.progress_overlay)
 
         _auth = Firebase.auth
         val currentUser = _auth.currentUser
@@ -74,22 +65,6 @@ class GameFormFragment : Fragment(), View.OnClickListener {
         database = Firebase.database.reference.child("users")
             .child(currentUser!!.uid).child("games")
 
-        database.addListenerForSingleValueEvent(object : ValueEventListener {
-
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-
-                dataSnapshot.children.forEach {
-                    //"it" is the snapshot
-                    val key: String = it.key.toString()
-                }
-            }
-
-            override fun onCancelled(p0: DatabaseError) {
-                //do whatever you need
-            }
-        })
-
-        viewModel = ViewModelProvider(this).get(GameFormViewModel::class.java)
         _navController = Navigation.findNavController(_view)
 
         _gameModel = GameModel(
@@ -163,8 +138,6 @@ class GameFormFragment : Fragment(), View.OnClickListener {
 
         val edtDesc = _view.findViewById<TextInputLayout>(R.id.edtDescription_gameFormFragment)
         val desc = edtDesc.editText?.text.toString().trim()
-
-        val imgView = _view.findViewById<ImageView>(R.id.imgView_gameFormFragment)
 
         edtName.error = null
         edtCreatedAt.error = null
@@ -289,11 +262,11 @@ class GameFormFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    fun hideOverlay() {
+    private fun hideOverlay() {
         progressOverlay.visibility = View.INVISIBLE
     }
 
-    fun showOverlay() {
+    private fun showOverlay() {
         progressOverlay.visibility = View.VISIBLE
     }
 }

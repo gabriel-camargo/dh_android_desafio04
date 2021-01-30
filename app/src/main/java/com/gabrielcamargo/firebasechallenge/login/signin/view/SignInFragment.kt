@@ -1,6 +1,5 @@
 package com.gabrielcamargo.firebasechallenge.login.signin.view
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -8,36 +7,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.Toast
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.gabrielcamargo.firebasechallenge.R
-import com.gabrielcamargo.firebasechallenge.login.signin.viewmodel.SignInViewModel
-import com.gabrielcamargo.firebasechallenge.login.signup.view.SignUpFragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
 class SignInFragment : Fragment(), View.OnClickListener {
 
     private lateinit var _view: View
-    private lateinit var _viewModel: SignInViewModel
     private lateinit var _navController: NavController
     private lateinit var _auth: FirebaseAuth
 
-
     companion object {
-        fun newInstance() = SignInFragment()
         private const val TAG = "SIGN_IN_FRAGMENT"
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _view = inflater.inflate(R.layout.sign_in_fragment, container, false)
         return _view
     }
@@ -46,7 +38,6 @@ class SignInFragment : Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         _auth = Firebase.auth
-        _viewModel = ViewModelProvider(this).get(SignInViewModel::class.java)
         _navController = Navigation.findNavController(_view)
 
         bindEvents()

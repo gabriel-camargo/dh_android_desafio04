@@ -1,15 +1,10 @@
 package com.gabrielcamargo.firebasechallenge.games.view
 
 import android.os.Bundle
-import android.service.controls.actions.FloatAction
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.Toast
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -17,7 +12,6 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gabrielcamargo.firebasechallenge.R
-import com.gabrielcamargo.firebasechallenge.gamedetails.view.GameDetailsFragmentDirections
 import com.gabrielcamargo.firebasechallenge.games.model.GameModel
 import com.gabrielcamargo.firebasechallenge.games.repository.GameRepository
 import com.gabrielcamargo.firebasechallenge.games.viewmodel.GameViewModel
@@ -26,7 +20,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
-import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 
 class GameFragment : Fragment(), View.OnClickListener {
@@ -38,14 +31,13 @@ class GameFragment : Fragment(), View.OnClickListener {
     private lateinit var database: DatabaseReference
 
     companion object {
-        fun newInstance() = GameFragment()
         const val TAG = "GAME_FRAGMENT"
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _view =  inflater.inflate(R.layout.game_fragment, container, false)
         return _view
     }
@@ -65,7 +57,7 @@ class GameFragment : Fragment(), View.OnClickListener {
             GameViewModel.GameViewModelFactory(GameRepository(database))
         ).get(GameViewModel::class.java)
 
-        _viewModel.games.observe(viewLifecycleOwner, Observer {
+        _viewModel.games.observe(viewLifecycleOwner, {
             createList(it)
         })
 

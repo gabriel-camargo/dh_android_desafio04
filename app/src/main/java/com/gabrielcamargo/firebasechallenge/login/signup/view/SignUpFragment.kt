@@ -8,11 +8,9 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.gabrielcamargo.firebasechallenge.R
-import com.gabrielcamargo.firebasechallenge.login.signup.viewmodel.SignUpViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
@@ -24,11 +22,9 @@ import com.google.firebase.ktx.Firebase
 class SignUpFragment : Fragment(), View.OnClickListener {
 
     companion object {
-        fun newInstance() = SignUpFragment()
         const val TAG = "SIGN_UP_FRAGMENT"
     }
 
-    private lateinit var viewModel: SignUpViewModel
     private lateinit var _view: View
     private lateinit var _navController: NavController
     private lateinit var _auth: FirebaseAuth
@@ -37,7 +33,7 @@ class SignUpFragment : Fragment(), View.OnClickListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _view = inflater.inflate(R.layout.sign_up_fragment, container, false)
         return _view
     }
@@ -46,7 +42,6 @@ class SignUpFragment : Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         _auth = Firebase.auth
-        viewModel = ViewModelProvider(this).get(SignUpViewModel::class.java)
         _navController = Navigation.findNavController(_view)
 
         bindEvents()
